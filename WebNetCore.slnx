@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../WebNetCoreEntittyFramework/WebNetCoreEntittyFramework.csproj" Id="c2064c57-9e43-4ff4-92be-53136c7af35c" />
   <Project Path="WebNetCore.csproj" />
 </Solution>
