@@ -21,6 +21,10 @@ namespace HowToCreateWebAPI.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] T User)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             _repository.Add(User);
             return Ok();
         }
@@ -48,6 +52,12 @@ namespace HowToCreateWebAPI.Controllers
         [HttpPut]
         public IActionResult Update([FromBody] T user)
         {
+            // para I check lang kung valid ba or hindi yung model
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            };
+
             _repository.Update(user);
             return Ok();
         }
