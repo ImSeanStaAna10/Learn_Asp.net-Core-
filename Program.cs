@@ -8,54 +8,50 @@ namespace HowToCreateWebAPI
     {
         public static void Main(string[] args)
         {
-            // Creates the WebApplicationBuilder.
-            // This is where we configure services (Dependency Injection)
-            // and application settings before building the app.
+            // Create the application builder.
             var builder = WebApplication.CreateBuilder(args);
 
-            // ============================================================
-            // Register Services (Dependency Injection Container)
-            // ============================================================
+            // ==================================================
+            // Dependency Injection (Services)
+            // ==================================================
 
-            // Registers MVC/Web API Controllers.
-            // Required so the application can discover and use controllers.
+            // Register API controllers.
             builder.Services.AddControllers();
 
-            // Registers FakeDbContext as a Singleton.
-            // Since this is an in-memory fake database, we only need
-            // one instance shared throughout the application's lifetime.
+            // Register Fake Database.
             builder.Services.AddSingleton<FakeDbContext>();
 
-            // Registers the Generic Repository.
-            // Whenever ASP.NET Core needs IBaseRepository<T>,
-            // it will automatically create and inject BaseRepository<T>.
+            // Register Generic Repository.
             builder.Services.AddSingleton(
                 typeof(IBaseRepository<>),
                 typeof(BaseRepository<>)
             );
 
+            // Register Hero Repository.
             builder.Services.AddSingleton<IHeroRepository, HeroRepository>();
 
-            // Builds the application using the registered services.
+            // Build the application.
             var app = builder.Build();
 
-            // ============================================================
-            // Configure HTTP Request Pipeline (Middleware)
-            // ============================================================
+            Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
 
-            // Redirects HTTP requests to HTTPS for secure communication.
+            // ==================================================
+            // HTTP Request Pipeline (Middleware)
+            // ==================================================
+
+            // Redirect HTTP requests to HTTPS.
             app.UseHttpsRedirection();
 
-            // Checks whether the current user is authorized
-            // to access protected endpoints.
-            // (Useful when JWT Authentication is implemented.)
+            // Authenticate the current user.
+            app.UseAuthentication();
+
+            // Check user permissions.
             app.UseAuthorization();
 
-            // Maps incoming HTTP requests to the appropriate Controller
-            // based on routing attributes such as [Route] and [HttpGet].
+            // Map controller endpoints.
             app.MapControllers();
 
-            // Starts the Web API and begins listening for incoming requests.
+            // Start the application.
             app.Run();
         }
     }
