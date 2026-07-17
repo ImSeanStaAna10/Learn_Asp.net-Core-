@@ -1,6 +1,7 @@
 using LoginAuthAPI.Contracts;
 using LoginAuthAPI.Infrastructure;
 using LoginAuthAPI.Repositories;
+using LoginAuthAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoginAuthAPI
@@ -40,6 +41,7 @@ namespace LoginAuthAPI
 
             // Register Repository sa DI
             builder.Services.AddScoped<IUserRepository , UserRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             #endregion
 
