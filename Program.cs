@@ -1,4 +1,6 @@
+using LoginAuthAPI.Contracts;
 using LoginAuthAPI.Infrastructure;
+using LoginAuthAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoginAuthAPI
@@ -35,6 +37,9 @@ namespace LoginAuthAPI
 
             // Registers MVC Controllers.
             builder.Services.AddControllers();
+
+            // Register Repository sa DI
+            builder.Services.AddScoped<IUserRepository , UserRepository>();
 
             #endregion
 
