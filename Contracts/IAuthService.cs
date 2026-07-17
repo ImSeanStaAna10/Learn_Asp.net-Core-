@@ -1,9 +1,6 @@
 ﻿namespace LoginAuthAPI.Contracts
 {
-    public interface IUserRepository
+    public class IAuthService
     {
-
-
-        
     }
 }
