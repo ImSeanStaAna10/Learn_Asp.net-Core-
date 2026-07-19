@@ -1,6 +1,11 @@
-﻿namespace LoginAuthAPI.Controllers
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LoginAuthAPI.Controllers
 {
-    public class AuthController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
     }
 }
