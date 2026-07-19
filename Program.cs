@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi;
 
 namespace LoginAuthAPI
 {
@@ -80,7 +81,15 @@ namespace LoginAuthAPI
 
             // Register Swagger Services
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+                {
+                    Title = "Login Authentication API",
+                    Version = "v1",
+                    Description = "ASP.NET core Web Api(JWT auth)"
+                });
+            });
 
             // Register Repository sa DI
 
