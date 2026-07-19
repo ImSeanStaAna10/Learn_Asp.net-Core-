@@ -2,7 +2,10 @@ using LoginAuthAPI.Contracts;
 using LoginAuthAPI.Infrastructure;
 using LoginAuthAPI.Repositories;
 using LoginAuthAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace LoginAuthAPI
 {
@@ -10,6 +13,12 @@ namespace LoginAuthAPI
     {
         public static void Main(string[] args)
         {
+
+            #region Constants
+            const string JWT_SECTION = "JwtSettings";
+            const string LOGIN_AUTH_API_CONTEXT_CONNSTRING = "AuthAPI";
+            #endregion
+
             #region Create Web Application Builder
 
             // Creates the WebApplicationBuilder.
@@ -20,10 +29,6 @@ namespace LoginAuthAPI
             #endregion
 
             #region Database Configuration
-
-            // Name of the connection string found in appsettings.json
-            const string LOGIN_AUTH_API_CONTEXT_CONNSTRING = "AuthAPI";
-
             // Registers the ApplicationDbContext into the Dependency Injection container.
             // EF Core will use this DbContext to communicate with SQL Server.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,15 +39,56 @@ namespace LoginAuthAPI
 
             #endregion
 
+            #region Jwt_Configuration
+            //Token Validation
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        // Token Creation
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration[$"{JWT_SECTION}:Issuer"],
+
+                        // Token Reciever
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration[$"{JWT_SECTION}:Audience"],
+
+                        // Token expiry
+                        ValidateLifetime = true,
+
+                        // Token Digitial signature
+                        ValidateIssuerSigningKey = true,
+
+                        // Secret Key to validate JWT signature
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(
+                             builder.Configuration[$"{JWT_SECTION}:SecretKey"]!
+
+                                )
+                            )
+                    };
+
+                });
+            #endregion
+
             #region Register Framework Services
 
             // Registers MVC Controllers.
             builder.Services.AddControllers();
 
+            // Register Swagger Services
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
             // Register Repository sa DI
+
+            #region -- DI CONTAINER --
             builder.Services.AddScoped<IUserRepository , UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
+            #endregion
 
             #endregion
 
@@ -59,13 +105,17 @@ namespace LoginAuthAPI
             if (app.Environment.IsDevelopment())
             {
                 Console.WriteLine("APPLICATION IS RUNNING IN DEVELOPMENT MODE...");
+
+                app.UseSwagger();
+                app.UseSwaggerUI();
+
             }
 
             // Redirect HTTP requests to HTTPS.
             app.UseHttpsRedirection();
 
-            // Authentication will be added later after JWT configuration.
-            // app.UseAuthentication();
+            // Authentication  
+            app.UseAuthentication();
 
             // Enables authorization middleware.
             app.UseAuthorization();
