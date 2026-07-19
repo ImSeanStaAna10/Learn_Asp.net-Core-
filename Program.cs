@@ -91,8 +91,7 @@ namespace LoginAuthAPI
                 });
             });
 
-            // Register Repository sa DI
-
+            // Register Repository sa DI\
             #region -- DI CONTAINER --
             builder.Services.AddScoped<IUserRepository , UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
