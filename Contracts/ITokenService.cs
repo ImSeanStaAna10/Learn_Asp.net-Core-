@@ -1,6 +1,10 @@
-﻿namespace LoginAuthAPI.Contracts
+﻿using LoginAuthAPI.Entities;
+
+namespace LoginAuthAPI.Contracts
 {
-    public class ITokenService
+    public interface ITokenService 
     {
+        string GenerateToken(User user);
+        
     }
 }

@@ -7,10 +7,12 @@ namespace LoginAuthAPI.Services
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ITokenService _tokenService;
 
-        public AuthService(IUserRepository userRepository)
+        public AuthService(IUserRepository userRepository, ITokenService tokenService)
         {
             _userRepository = userRepository;
+            _tokenService = tokenService;
         }
 
         public AuthResponseDTO Register(RegisterRequestDTO request)
@@ -72,11 +74,20 @@ namespace LoginAuthAPI.Services
                     Message = "Invalid Email Or Password"
                 };
 
+                
             };
+
+            string token = _tokenService.GenerateToken(user);
+
+
 
             return new AuthResponseDTO
             {
-                Message = "Login Succesfull"
+                Message = "Login Succesfull",
+                Token = token,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role
             };
 
 

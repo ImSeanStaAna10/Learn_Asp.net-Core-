@@ -42,6 +42,7 @@ namespace LoginAuthAPI
             // Register Repository sa DI
             builder.Services.AddScoped<IUserRepository , UserRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
             #endregion
 
